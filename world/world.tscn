@@ -1,0 +1,87 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Assets/background.png" type="Texture" id=3]
+[ext_resource path="res://player/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://player/Player.gd" type="Script" id=5]
+[ext_resource path="res://Ball/Ball.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Ball/Ball.gd" type="Script" id=7]
+[ext_resource path="res://world/world.gd" type="Script" id=8]
+[ext_resource path="res://Assets/Xolonium-Bold.ttf" type="DynamicFontData" id=9]
+
+[sub_resource type="DynamicFont" id=4]
+size = 48
+font_data = ExtResource( 9 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 640, 10 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 360, 10 )
+
+[node name="world" type="Node"]
+script = ExtResource( 8 )
+
+[node name="Background" type="Sprite" parent="."]
+position = Vector2( 640, 360 )
+texture = ExtResource( 3 )
+
+[node name="StartLabel" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -70.0
+custom_fonts/font = SubResource( 4 )
+text = "Press space to Start"
+align = 1
+valign = 1
+
+[node name="PlayerLeft" parent="." instance=ExtResource( 4 )]
+position = Vector2( 51, 360 )
+collision_layer = 2
+script = ExtResource( 5 )
+paddle_position = 0
+
+[node name="PlayerRight" parent="." instance=ExtResource( 4 )]
+position = Vector2( 1241, 362 )
+script = ExtResource( 5 )
+paddle_position = 1
+
+[node name="Ball" parent="." instance=ExtResource( 6 )]
+position = Vector2( 640, 360 )
+collision_layer = 4
+collision_mask = 3
+script = ExtResource( 7 )
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+position = Vector2( 640, 0 )
+shape = SubResource( 1 )
+
+[node name="DownWall" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DownWall"]
+position = Vector2( 640, 731 )
+shape = SubResource( 1 )
+
+[node name="LeftWall" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+position = Vector2( 0, 360 )
+rotation = 1.5708
+shape = SubResource( 2 )
+
+[node name="RightWall" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+position = Vector2( 1291, 360 )
+rotation = 1.5708
+shape = SubResource( 2 )
+
+[connection signal="body_entered" from="LeftWall" to="." method="_on_LeftWall_body_entered"]
+[connection signal="body_entered" from="RightWall" to="." method="_on_RightWall_body_entered"]
