@@ -1,3 +1,4 @@
 res://default_env.tres
 res://Lobby/Lobby.tscn
 res://Ball/Ball.gd
+res://system/common/network/client_network.gd

@@ -11,9 +11,9 @@ func connect_to_server():
 
 func start_match_from_server():
 	var world = MatchGame.instantiate()
-	multiplayer.get_root().add_child(world)
+	get_tree().get_root().add_child(world)
 	world.setup()
-	multiplayer.current_scene.queue_free()
+	get_tree().current_scene.queue_free()
 	print("Match signal received, switching to game scene")
 	
 func _player_connected(_id):
