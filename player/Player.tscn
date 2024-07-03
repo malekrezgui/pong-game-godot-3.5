@@ -22,16 +22,16 @@ func _physics_process(delta):
 	move_and_slide()
 	var new_position = velocity
 	_send_position(new_position)
-	#Server.update_player_position(get_tree().get_network_unique_id(), position)
+	#Server.update_player_position(multiplayer.get_network_unique_id(), position)
 
 func _send_position(position):
-	rpc_id(1, \"_receive_position\", get_tree().get_unique_id(), position)
+	rpc_id(1, \"_receive_position\", multiplayer.get_unique_id(), position)
 	
 
 	
 
 #remotesync func sync_player_position(player_id, new_position):
-#	if player_id != get_tree().get_network_unique_id():
+#	if player_id != multiplayer.get_network_unique_id():
 #		position = new_position
 
 #remote func update_remote_player(transform):

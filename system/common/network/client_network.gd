@@ -2,22 +2,22 @@ extends "network.gd"
 
 func connect_to_server():
 	network.create_client(default_ip, port)
-	get_tree().set_multiplayer_peer(network)
-	get_tree().connect("peer_connected", Callable(self, "_player_connected"))
-	get_tree().connect("peer_disconnected", Callable(self, "_player_disconnected"))
-	get_tree().connect("connection_failed", Callable(self, "_connected_fail"))
-	get_tree().connect("server_disconnected", Callable(self, "_server_disconnected"))
+	multiplayer.set_multiplayer_peer(network)
+	multiplayer.connect("peer_connected", Callable(self, "_player_connected"))
+	multiplayer.connect("peer_disconnected", Callable(self, "_player_disconnected"))
+	multiplayer.connect("connection_failed", Callable(self, "_connected_fail"))
+	multiplayer.connect("server_disconnected", Callable(self, "_server_disconnected"))
 	ClientData.connect("_on_start_match_from_server", Callable(self, "start_match_from_server"))
 
 func start_match_from_server():
 	var world = MatchGame.instantiate()
-	get_tree().get_root().add_child(world)
+	multiplayer.get_root().add_child(world)
 	world.setup()
-	get_tree().current_scene.queue_free()
+	multiplayer.current_scene.queue_free()
 	print("Match signal received, switching to game scene")
 	
 func _player_connected(_id):
-	#Network.player_netID = get_tree().get_network_unique_id()
+	#Network.player_netID = multiplayer.get_network_unique_id()
 	var player = {"id": _id, "position": Vector2()}
 	ServerData.players[_id] = player
 	
@@ -26,7 +26,7 @@ func _player_disconnected(id):
 	
 func _connected_ok():
 	print("Successfully connected to server")
-	var id = get_tree().get_unique_id()
+	var id = multiplayer.get_unique_id()
 	var player = {"id": id, "position": Vector2()}
 	ServerData.players[id] = player
 

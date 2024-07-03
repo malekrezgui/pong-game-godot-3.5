@@ -9,13 +9,13 @@ var is_local : bool = false
 
 func set_ownership(id):
 	owner_id = id
-	if id == get_tree().get_unique_id():
+	if id == multiplayer.get_unique_id():
 		is_local = true
 	else:
 		is_local = false
 
 func sync_position(id, pos):
-	if id == get_tree().get_unique_id():
+	if id == multiplayer.get_unique_id():
 		return
 	if is_local :
 		return
@@ -37,7 +37,7 @@ func _physics_process(delta):
 		
 	
 	#print("paddle >>>",ServerData.players)
-	#print("paddle >>> ",get_tree().get_network_unique_id())
+	#print("paddle >>> ",multiplayer.get_network_unique_id())
 	var velocity = Vector2.ZERO
 	if Input.is_action_pressed("ui_up"):
 		velocity.y -= speed
@@ -51,6 +51,6 @@ func _physics_process(delta):
 		_send_position(new_position)
 
 func _send_position(position):
-	#print(">>ALPHA: ", get_tree().get_network_unique_id(),"-",position,"1")
-	ClientNetwork.update_position_on_server(get_tree().get_unique_id(), position,"1")
+	#print(">>ALPHA: ", multiplayer.get_network_unique_id(),"-",position,"1")
+	ClientNetwork.update_position_on_server(multiplayer.get_unique_id(), position,"1")
 
