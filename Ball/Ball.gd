@@ -1,8 +1,8 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
 
 var speed = 600
-var velocity = Vector2.ZERO
+#var velocity = Vector2.ZERO
 
 func _ready():
 	initialize_ball_direction()

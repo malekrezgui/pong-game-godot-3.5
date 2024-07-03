@@ -1,21 +1,21 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
 var speed = 500
 
 var owner_id : int = -1
 var is_local : bool = false
-export var paddle_position: int
+@export var paddle_position: int
 
 
 func set_ownership(id):
 	owner_id = id
-	if id == get_tree().get_network_unique_id():
+	if id == get_tree().get_unique_id():
 		is_local = true
 	else:
 		is_local = false
 
 func sync_position(id, pos):
-	if id == get_tree().get_network_unique_id():
+	if id == get_tree().get_unique_id():
 		return
 	if is_local :
 		return
@@ -44,12 +44,13 @@ func _physics_process(delta):
 	if Input.is_action_pressed("ui_down"):
 		velocity.y += speed
 
-	move_and_slide(velocity)
+	set_velocity(velocity)
+	move_and_slide()
 	var new_position = position
 	if velocity != Vector2.ZERO:
 		_send_position(new_position)
 
 func _send_position(position):
 	#print(">>ALPHA: ", get_tree().get_network_unique_id(),"-",position,"1")
-	ClientNetwork.update_position_on_server(get_tree().get_network_unique_id(), position,"1")
+	ClientNetwork.update_position_on_server(get_tree().get_unique_id(), position,"1")
 

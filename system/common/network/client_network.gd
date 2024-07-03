@@ -2,15 +2,15 @@ extends "network.gd"
 
 func connect_to_server():
 	network.create_client(default_ip, port)
-	get_tree().set_network_peer(network)
-	get_tree().connect("network_peer_connected", self, "_player_connected")
-	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
-	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")
-	ClientData.connect("_on_start_match_from_server", self, "start_match_from_server")
+	get_tree().set_multiplayer_peer(network)
+	get_tree().connect("peer_connected", Callable(self, "_player_connected"))
+	get_tree().connect("peer_disconnected", Callable(self, "_player_disconnected"))
+	get_tree().connect("connection_failed", Callable(self, "_connected_fail"))
+	get_tree().connect("server_disconnected", Callable(self, "_server_disconnected"))
+	ClientData.connect("_on_start_match_from_server", Callable(self, "start_match_from_server"))
 
 func start_match_from_server():
-	var world = MatchGame.instance()
+	var world = MatchGame.instantiate()
 	get_tree().get_root().add_child(world)
 	world.setup()
 	get_tree().current_scene.queue_free()
@@ -26,7 +26,7 @@ func _player_disconnected(id):
 	
 func _connected_ok():
 	print("Successfully connected to server")
-	var id = get_tree().get_network_unique_id()
+	var id = get_tree().get_unique_id()
 	var player = {"id": id, "position": Vector2()}
 	ServerData.players[id] = player
 
@@ -40,7 +40,7 @@ func update_position_on_server(player_id,pos,player):
 	rpc_id(1, "_update_position_on_server", player_id, pos,player)
 
 
-remote func _update_position_on_server(player_id, pos,player):
+@rpc("any_peer") func _update_position_on_server(player_id, pos,player):
 	if ServerData.players.has(player_id) :
 		ServerData.players[player_id]["position"] = pos
 		broadcast_position(player_id, pos,player)
@@ -52,7 +52,7 @@ func broadcast_position(player_id, pos,player):
 			
 signal update_player_position(player_id, position,player)
 
-remote func _update_position_from_server(player_id, position,player):
+@rpc("any_peer") func _update_position_from_server(player_id, position,player):
 	#print("_update_position_from_server: ",player_id, "-",position)
 	if ServerData.players.has(player_id):
 		ServerData.players[player_id]["position"] = position

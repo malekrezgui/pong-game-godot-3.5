@@ -1,19 +1,19 @@
 extends Node
 
-onready var ball = $Ball
-onready var screen_size = get_viewport().size
-onready var start_label=$StartLabel
-onready var restart_button =$RestartButton
-onready var player1 = $PlayerLeft
-onready var player2 =$PlayerRight
+@onready var ball = $Ball
+@onready var screen_size = get_viewport().size
+@onready var start_label=$StartLabel
+@onready var restart_button =$RestartButton
+@onready var player1 = $PlayerLeft
+@onready var player2 =$PlayerRight
 var game_paused = true
 
 func _physics_process(delta):
 	pass
 
 func _ready():
-	ClientNetwork.connect("update_player_position", self, "_on_update_player_position")
-	ClientNetwork.connect("on_update_ball_position_from_server", self, "_on_update_ball_position_from_server")
+	ClientNetwork.connect("update_player_position", Callable(self, "_on_update_player_position"))
+	ClientNetwork.connect("on_update_ball_position_from_server", Callable(self, "_on_update_ball_position_from_server"))
 	
 func setup():
 	for k in ServerData.players.keys():

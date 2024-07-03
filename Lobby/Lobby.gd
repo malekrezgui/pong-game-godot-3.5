@@ -1,7 +1,7 @@
 extends Control
 
-onready var host_button = $LobbyPanel/HostButton
-onready var join_button = $LobbyPanel/JoinButton
+@onready var host_button = $LobbyPanel/HostButton
+@onready var join_button = $LobbyPanel/JoinButton
 
 func _ready():
 	if OS.has_feature("server"):
